@@ -17,7 +17,7 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 
-<body style="background-color: #f0f5ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; padding: 20px;">
+<body style="background-color: #f0f5ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; padding: 20px;" onload="getLocalContacts">
     <div class="container">
         <div class="header">
             <h1>CONTACT INFO</h1>
@@ -44,13 +44,13 @@
         </div>
 
         <div class="d-flex justify-content-center gap-3 flex-wrap mt-4 mb-4">
-            <button class="btn btn-danger ms-3" onclick="deleteLastCon()">Delete last</button>
+            <button class="btn btn-danger ms-3" onclick="deleteLastCon()">Delete last contact</button>
 
-            <button class="btn btn-info ms-3" onclick="reverseCon()">Reverse</button>
+            <button class="btn btn-info ms-3" onclick="reverseCon()">Reverse contact</button>
 
-            <button class="btn btn-warning ms-3" onclick="addAsFirstCon()">Add as first</button>
+            <button class="btn btn-warning ms-3" onclick="addAsFirstCon()">Add as first contact</button>
 
-            <button class="btn btn-primary ms-3" onclick="deleteFirstCon()">Delete first</button>
+            <button class="btn btn-primary ms-3" onclick="deleteFirstCon()">Delete first contact</button>
         </div>
 
     </div>
@@ -85,6 +85,8 @@
 
             (conName.value == "" || conPhone.value == "" || conEmail.value == "" || conAddress.value == "" || conImg.value == "") ? alert("Please fill in all fields") : contacts.push(contact);
 
+            saveContacts();
+
             console.log(contacts);
             conName.value = "";
             conPhone.value = "";
@@ -97,35 +99,59 @@
         function displayContacts() {
             result.innerHTML = ""
             for (let i = 0; i < contacts.length; i++) {
-                result.innerHTML += `<div class="card mt-4" style="border-left: 5px solid #6c8fce; border-radius: 10px; padding: 5px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); transition: transform 0.3s;">
+                result.innerHTML += `<div class="card mt-4" style="max-width: 40%; border-left: 5px solid #6c8fce; border-radius: 10px; padding: 5px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); transition: transform 0.3s;">
                 <img src="${contacts[i].img}" class="card-img-top" alt="...">
                 <div class="card-body">
                 <h5 class="contact-name">${contacts[i].name}</h5>
                 <p class="card-text mb-1">☎ ${contacts[i].phone}</p>
                 <p class="card-text mb-1">📧 ${contacts[i].email}</p>
-                <p class="card-text mb-1">📍 ${contacts[i].address}</p>
+                <p class="card-text mb-1 text-break text-wrap">📍 ${contacts[i].address}</p>
                 <div class="d-flex flex-wrap justify-content-center gap-2 align-items-center"><button class="btn btn-danger align-items-center" onclick = {deleteItem(${i})}>Delete🚮</button><button class="btn btn-success" onclick = {editItem(${i})}>Edit✍</button><button onclick=(changeAvailability(${i})) class='btn ${contacts[i].avail ? "btn-danger" : "btn-success"}'> ${contacts[i].avail ? "Unblock" : "Block"} </button></div>
                 </div>
             </div>`
             }
         }
 
+        function saveContacts(){
+            let conCont = JSON.stringify(contacts);
+            localStorage.setItem("contactss", conCont);
+        }
+
+        function getLocalContacts(){
+            let storedContacts = localStorage.getItem("contactss");
+            if (storedContacts){
+                contacts = JSON.parse(storedContacts);
+            }else{
+                'nothing in local storage';
+            }
+            displayContacts();
+        }
+
         function deleteFirstCon(){
+            let delFirstCon = confirm("Are you sure you want to delete the first contact?");
+            if (delFirstCon){
             contacts.shift();
             console.log(contacts);
             displayContacts();
+            }
         }
 
         function deleteLastCon(){
+            let delLastCon = confirm("Are you sure you want to delete the last contact?");
+            if (delLastCon){
             contacts.pop();
             console.log(contacts);
             displayContacts();
+            }
         }
 
         function reverseCon(){
+            let revCont = confirm("Are you sure you want to reverse the contacts?");
+            if (revCont){
             contacts.reverse();
             console.log(contacts);
             displayContacts();
+            }
         }
 
         function addAsFirstCon(){
@@ -149,9 +175,12 @@
         }
 
         function deleteItem(i){
+            let delCont = confirm("Are you sure you want to delete this contact?");
+            if (delCont){
             contacts.splice(i, 1);
             console.log(contacts);
             displayContacts();
+            }
         }
 
         function editItem(i){
