@@ -71,13 +71,16 @@
             let email = conEmail.value;
             let address = conAddress.value;
             let img = conImg.value;
+            let avail = true
 
             let contact = {
                 name: name,
                 phone: phone,
                 email: email,
                 address: address,
-                img: img
+                img: img,
+                avail
+
             };
 
             (conName.value == "" || conPhone.value == "" || conEmail.value == "" || conAddress.value == "" || conImg.value == "") ? alert("Please fill in all fields") : contacts.push(contact);
@@ -101,7 +104,7 @@
                 <p class="card-text mb-1">☎ ${contacts[i].phone}</p>
                 <p class="card-text mb-1">📧 ${contacts[i].email}</p>
                 <p class="card-text mb-1">📍 ${contacts[i].address}</p>
-                <div class="d-flex flex-wrap justify-content-center gap-2 align-items-center"><button class="btn btn-danger align-items-center" onclick = {deleteItem(${i})}>Delete🚮</button><button class="btn btn-success" onclick = {editItem(${i})}>Edit✍</button></div>
+                <div class="d-flex flex-wrap justify-content-center gap-2 align-items-center"><button class="btn btn-danger align-items-center" onclick = {deleteItem(${i})}>Delete🚮</button><button class="btn btn-success" onclick = {editItem(${i})}>Edit✍</button><button onclick=(changeAvailability(${i})) class='btn ${contacts[i].avail ? "btn-danger" : "btn-success"}'> ${contacts[i].avail ? "Unblock" : "Block"} </button></div>
                 </div>
             </div>`
             }
@@ -159,6 +162,12 @@
             let newImg = prompt("Enter new image URL:", contacts[i].img);
             contacts.splice(i, 1, { name: newName ? newName : contacts[i].name, phone: newPhone ? newPhone : contacts[i].phone, email: newEmail ? newEmail : contacts[i].email, address: newAddress ? newAddress : contacts[i].address, img: newImg ? newImg : contacts[i].img });
             console.log(contacts);
+            displayContacts();
+        }
+
+
+        function changeAvailability(i){
+            contacts[i].avail = !contacts[i].avail;
             displayContacts();
         }
     </script>
